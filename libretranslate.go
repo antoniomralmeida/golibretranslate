@@ -2,6 +2,7 @@ package golibretranslate
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 )
@@ -40,6 +41,9 @@ func Translate(text string, locale_source, locale_target string) (string, error)
 	resp, err := http.PostForm(u.String(), data)
 	if err != nil {
 		return "", err
+	}
+	if resp.StatusCode != 200 {
+		return "", errors.New(resp.Status)
 	}
 	res := new(response)
 	err = json.NewDecoder(resp.Body).Decode(&res)
